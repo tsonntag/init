@@ -1,17 +1,16 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "ini/version"
+require "init/version"
 
 Gem::Specification.new do |gem|
   gem.name        = "init"
-  gem.version     = Hermes::VERSION
+  gem.version     = Init::VERSION
   gem.platform    = Gem::Platform::RUBY
   gem.authors     = ["Thomas Sonntag"]
   gem.email       = ["git@sonntagsbox.de"]
   gem.homepage    = ""
   gem.summary     = %q{Job control} 
   gem.description = %q{Job control} 
-  gem.description = <<-EOS
 
   gem.rubyforge_project = "init"
 
