@@ -1,0 +1,248 @@
+  /home/hermes/software/init/lib/init/application 0.003285871 secs
+  rubygems 0.000107096 secs
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/site_ruby/1.9.1
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/site_ruby/1.9.1/sparc-solaris2.10
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/site_ruby
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/vendor_ruby/1.9.1
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/vendor_ruby/1.9.1/sparc-solaris2.10
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/vendor_ruby
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/1.9.1
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/1.9.1/sparc-solaris2.10
+requiring logging ....     rubygems/version 0.005534513 secs
+      rubygems/version 9.3528e-05 secs
+      rubygems/version 0.000104292 secs
+      rubygems/deprecate 8.5748e-05 secs
+    rubygems/requirement 0.006085097 secs
+      rubygems/deprecate 0.000108815 secs
+    rubygems/platform 0.012496185 secs
+    rubygems/deprecate 0.000108181 secs
+    rubygems/requirement 0.000111618 secs
+      thread 0.021339628 secs
+      rbconfig 0.004822562 secs
+    /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/utils 0.036827346 secs
+        psych.so 0.0079571 secs
+            stringio 0.007399919 secs
+          psych/nodes/node 0.014752797 secs
+          psych/nodes/stream 0.006684796 secs
+          psych/nodes/document 0.006734546 secs
+          psych/nodes/sequence 0.006824817 secs
+          psych/nodes/scalar 0.006936797 secs
+          psych/nodes/mapping 0.006734093 secs
+          psych/nodes/alias 0.00637346 secs
+        psych/nodes 0.061818907 secs
+        psych/streaming 0.006448263 secs
+          psych/visitors/visitor 0.00633755 secs
+              strscan 0.007881754 secs
+            psych/scalar_scanner 0.019198619 secs
+          psych/visitors/to_ruby 0.03463786 secs
+          psych/visitors/emitter 0.007923814 secs
+          psych/visitors/yaml_tree 0.017398074 secs
+            psych/json/ruby_events 0.006664354 secs
+          psych/visitors/json_tree 0.013941524 secs
+          psych/visitors/depth_first 0.006949732 secs
+        psych/visitors 0.093639981 secs
+        psych/handler 0.007212767 secs
+          psych/handler 0.004848432 secs
+        psych/tree_builder 0.013328075 secs
+        psych/parser 0.006966108 secs
+        psych/omap 0.006173289 secs
+        psych/set 0.006080484 secs
+        psych/coder 0.00809902 secs
+        psych/core_ext 0.007383904 secs
+            date_core 0.009050038 secs
+            date/format 0.006135931 secs
+          date 0.022742546 secs
+        psych/deprecated 0.031753598 secs
+        psych/json 0.005943991 secs
+      psych 0.273105577 secs
+    yaml 0.280755954 secs
+    stringio 0.005335337 secs
+      etc 0.007761452 secs
+    fileutils 0.111086724 secs
+    little-plugger 0.00649566 secs
+    multi_json 0.007226064 secs
+    syslog 0.003054127 secs
+    /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/appender 0.004945849 secs
+    /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/layout 0.002759342 secs
+    /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/log_event 0.002149782 secs
+    /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/logger 0.008268166 secs
+        thread 0.000121297 secs
+      singleton 0.003064347 secs
+    /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/repository 0.007275722 secs
+    /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/root_logger 0.001790325 secs
+    /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/stats 0.005568342 secs
+    /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/color_scheme 0.004781767 secs
+      /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/appenders/buffering 0.006872304 secs
+      /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/appenders/io 0.002593452 secs
+      /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/appenders/console 0.002197904 secs
+              socket.so 0.008275674 secs
+            socket 0.023475482 secs
+            timeout 0.004079314 secs
+          net/protocol 0.038489681 secs
+            digest.so 0.001797019 secs
+          digest/md5 0.007190155 secs
+          timeout 0.000148071 secs
+            openssl.so 0.040122895 secs
+            openssl/bn 0.001882044 secs
+            openssl/cipher 0.003516157 secs
+              stringio 0.001241821 secs
+            openssl/config 0.01766337 secs
+            openssl/digest 0.003938118 secs
+              openssl/buffering 0.007351431 secs
+              fcntl 0.002759252 secs
+            openssl/ssl-internal 0.017618777 secs
+            openssl/x509-internal 0.008422569 secs
+          openssl 0.095158317 secs
+        net/smtp 0.172931583 secs
+          date 0.000201347 secs
+        time 0.034608281 secs
+      /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/appenders/email 0.212008577 secs
+      /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/appenders/file 0.002841021 secs
+      /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/appenders/growl 0.004503446 secs
+      /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/appenders/rolling_file 0.007650286 secs
+      /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/appenders/string_io 0.004017535 secs
+      /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/appenders/syslog 0.003636187 secs
+    /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/appenders 0.249353492 secs
+      /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/layouts/basic 0.001593952 secs
+      /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/layouts/parseable 0.005137246 secs
+      /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/layouts/pattern 0.008557976 secs
+    /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/layouts 0.016995289 secs
+    /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/proxy 0.005543106 secs
+    /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/diagnostic_context 0.006407198 secs
+    /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/config/configurator 0.007346999 secs
+    /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/config/yaml_configurator 0.00492839 secs
+    /home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib/logging/rails_compat 0.001502234 secs
+  logging 1.962850818 secs
+ 1.962933401 secs
+Addrinfo
+BasicSocket
+ConditionVariable
+Date
+DateTime
+Digest
+Etc
+Fcntl
+FileUtils
+HAVE_SYSLOG
+IPSocket
+Init
+LittlePlugger
+Logging
+MultiJson
+Net
+OpenSSL
+Psych
+Queue
+ReentrantMutex
+ScanError
+Singleton
+SizedQueue
+Socket
+SocketError
+StringIO
+StringScanner
+Syck
+Syslog
+TCPServer
+TCPSocket
+Timeout
+TimeoutError
+UDPSocket
+UNIXServer
+UNIXSocket
+YAML
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/little-plugger-1.1.3/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/multi_json-1.3.7/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/site_ruby/1.9.1
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/site_ruby/1.9.1/sparc-solaris2.10
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/site_ruby
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/vendor_ruby/1.9.1
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/vendor_ruby/1.9.1/sparc-solaris2.10
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/vendor_ruby
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/1.9.1
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/1.9.1/sparc-solaris2.10
+requiring hermes ....       set 0.545984752 secs
+      thread 0.482041662 secs
+        pathname.so 0.514069155 secs
+      pathname 1.01046924 secs
+      active_support/core_ext/module/aliasing 0.004116309 secs
+        active_support/core_ext/array/extract_options 0.002925865 secs
+      active_support/core_ext/module/attribute_accessors 0.006777691 secs
+          active_support/inflector/inflections 0.006398606 secs
+                active_support/core_ext/module/attribute_accessors 0.000717921 secs
+                active_support/multibyte/utils 0.003904289 secs
+              active_support/multibyte 0.008738699 secs
+            active_support/core_ext/string/multibyte 0.012441188 secs
+                i18n/version 0.003650298 secs
+                i18n/exceptions 0.008047642 secs
+                i18n/interpolate/ruby 0.005051949 secs
+              i18n 0.028528335 secs
+              active_support/lazy_load_hooks 0.003508655 secs
+            active_support/i18n 0.039756563 secs
+          active_support/inflector/transliterate 0.056139035 secs
+            active_support/inflector/inflections 0.0007797 secs
+              active_support/inflector/inflections 0.00087368 secs
+            active_support/inflections 0.014414229 secs
+          active_support/inflector/methods 0.043242595 secs
+          active_support/inflections 0.000772916 secs
+            active_support/inflector/methods 0.000835147 secs
+            active_support/inflector/transliterate 0.000719639 secs
+          active_support/core_ext/string/inflections 0.006643912 secs
+        active_support/inflector 0.11611497 secs
+      active_support/core_ext/module/introspection 0.120266373 secs
+          active_support/core_ext/string/encoding 0.002851513 secs
+        active_support/core_ext/object/blank 0.007520849 secs
+      active_support/core_ext/module/anonymous 0.010390904 secs
+        active_support/core_ext/string/inflections 0.000688524 secs
+      active_support/core_ext/module/qualified_const 0.005260623 secs
+      active_support/core_ext/object/blank 0.000815247 secs
+      active_support/core_ext/load_error 0.003715062 secs
+      active_support/core_ext/name_error 0.003074117 secs
+      active_support/core_ext/string/starts_ends_with 0.002696025 secs
+      active_support/inflector 0.000745057 secs
+    active_support/dependencies 2.251580707 secs
+        thread 0.494554579 secs
+      monitor 1.010459196 secs
+    logger 1.515389303 secs
+    utils 0.003573504 secs
+  hermes 3.856082214 secs
+ 3.85617348 secs
+ActiveSupport
+Hermes
+I18n
+Logger
+MissingSourceFile
+Monitor
+MonitorMixin
+Pathname
+QualifiedConstUtils
+Set
+SortedSet
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/little-plugger-1.1.3/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/logging-1.8.0/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/multi_json-1.3.7/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/nokogiri-1.5.5/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/pg-0.11.0/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/pg-0.11.0/ext
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/active_attr-0.5.1/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/net-sftp-2.0.5/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/zip-2.0.2/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/interfaces-2.3.0/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/ruby-gsm-1.1.0/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/luhnar-1.0.1/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/gsm2-2.1.1/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/graph_builder-1.0.1/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/range_builder-1.0.2/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/diff-lcs-1.1.3/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/hermes-1.0.0/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/i18n-0.6.1/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/gems/1.9.1/gems/activesupport-3.2.9/lib
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/site_ruby/1.9.1
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/site_ruby/1.9.1/sparc-solaris2.10
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/site_ruby
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/vendor_ruby/1.9.1
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/vendor_ruby/1.9.1/sparc-solaris2.10
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/vendor_ruby
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/1.9.1
+/home/hermes/.rbenv/versions/1.9.3-p0/lib/ruby/1.9.1/sparc-solaris2.10

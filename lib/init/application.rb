@@ -1,17 +1,10 @@
-require 'active_support/core_ext/module/aliasing'
-
 module Init
-  module Stoppable
+  class Application
 
-    def self.included base
-      base.send :alias_method_chain, :stop, :stoppable
-      base.send :alias_method_chain, :call, :stoppable
-    end
+    attr_reader :progname, :pid_file
 
-    def stop_with_stoppable
-      @stop_requested = true
-      stop_without_stoppable
-      remove_pid
+    def initialize progname = File.basename($0), pid_file = "/var/run/#{progname}.pid"
+      @progname, @pid_file = progname, pid_file
     end
 
     def stop_requested?
@@ -24,7 +17,7 @@ module Init
       else
         Process.daemon
         save_pid
-        call *args
+        run! *args
       end
     end
 
@@ -50,33 +43,39 @@ module Init
       end
     end
 
-    def call_with_stoppable *args
+    def run! *args
       @stop_requested = false
 
       %w(INT TERM).each do |s|
         trap(s) do
           logger.info{ "#{self}: signal caught. setting stop..." } if logger
+          @stop_requested = true
           stop
+          remove_pid
         end
       end
 
-      call_without_stoppable *args
+      call *args
     end
 
-    def progname= progname
-      @progname = progname
+    def usage
+      STDERR.puts %Q( Usage: #{File.basename($0)} start | stop | run | status)
     end
 
-    def progname
-      @progname ||= File.basename($0)
+    def command args = ARGV
+      cmd = args.shift
+      case cmd 
+      when /start|stop|run/
+        send :"#{cmd}!"
+      when 'status'
+        status
+      else
+        usage 
+      end
     end
 
-    def pid_file= pid_file
-      @pid_file = pid_file
-    end
-
-    def pid_file
-      @pid_file ||= "/var/run/#{progname}.pid"
+    def to_s
+      progname
     end
 
     private
