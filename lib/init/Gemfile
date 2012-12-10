@@ -1,0 +1,4 @@
+
+source 'http://rubygems.org'
+
+gem 'hermes', '1.0.0'
