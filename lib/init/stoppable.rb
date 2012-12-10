@@ -14,10 +14,14 @@ module Init
       @stop_requested
     end
 
-    def trap_signals
-      trap("INT"){signal}
-      trap("KILL"){signal}
-      trap("TERM"){signal}
+    def trap_signals bool = true
+      %w(INT KILL TERM).each do |s|
+        if bool
+          trap(s){signal}
+        else
+          trap s, 'DEFAULT'
+        end
+      end
     end
 
     def reset_stop
