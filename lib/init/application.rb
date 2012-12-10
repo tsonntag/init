@@ -3,8 +3,10 @@ module Init
 
     attr_reader :progname, :pid_file
 
-    def initialize progname = File.basename($0), pid_file = "/var/run/#{progname}.pid"
-      @progname, @pid_file = progname, pid_file
+    def initialize opts = {}
+      @progname = opts[:progname] || File.basename($0)
+      @pid_file = opts[:pid_file] || "/var/run/#{@progname}.pid"
+      @periodic = opts[:periodic]
     end
 
     def stop_requested?
@@ -66,7 +68,17 @@ module Init
         end
       end
 
-      call *args
+      while !stop_requested?
+        call *args
+        break unless seconds
+
+        logger.debug{"#{self}: sleeping #{seconds} seconds"} if logger
+        seconds.times do
+          break if stop_requested?
+          sleep 1
+        end
+      end
+
     end
 
     def usage
@@ -92,6 +104,7 @@ module Init
     end
 
     private
+    
     def save_pid
       IO.write pid_file, Process.pid.to_s
     end
