@@ -12,6 +12,7 @@ module Init
       while !stop_requested?
         call_without_periodic *args
         logger.debug{"#{self}: sleeping #{seconds} seconds"} if logger
+        break unless seconds
         seconds.times do
           sleep 1
           break if stop_requested?
