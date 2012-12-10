@@ -71,10 +71,10 @@ module Init
 
       while !stop_requested?
         call *args
-        break unless seconds
+        break unless periodic
 
-        logger.debug{"#{self}: sleeping #{seconds} seconds"} if logger
-        seconds.times do
+        logger.debug{"#{self}: sleeping #{periodic} seconds"} if logger
+        periodic.times do
           break if stop_requested?
           sleep 1
         end
