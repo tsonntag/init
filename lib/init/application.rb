@@ -11,6 +11,14 @@ module Init
       @stop_requested
     end
 
+    # to be overwritten
+    def call *args
+    end
+
+    # to be overwritten
+    def stop
+    end
+
     # run as daemon
     def start! *args
       if daemon_running?
