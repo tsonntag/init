@@ -5,7 +5,7 @@ module Init
 
     def initialize opts = {}
       @logger   = opts[:logger]
-      @progname = opts[:progname] || @logger.try(:progname) || File.basename($0)
+      @progname = opts[:progname] || File.basename($0)
       @pid_file = opts[:pid_file] || "/var/run/#{@progname}.pid"
       @periodic = opts[:periodic]
     end
