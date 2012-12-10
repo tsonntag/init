@@ -4,10 +4,10 @@ module Init
     attr_reader :progname, :pid_file, :periodic, :logger
 
     def initialize opts = {}
-      @progname = opts[:progname] || File.basename($0)
+      @logger   = opts[:logger]
+      @progname = opts[:progname] || @logger.try(:progname) || File.basename($0)
       @pid_file = opts[:pid_file] || "/var/run/#{@progname}.pid"
       @periodic = opts[:periodic]
-      @logger   = opts[:logger]
     end
 
     def stop_requested?
