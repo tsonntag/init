@@ -1,12 +1,13 @@
 module Init
   class Application
 
-    attr_reader :progname, :pid_file
+    attr_reader :progname, :pid_file, :periodic, :logger
 
     def initialize opts = {}
       @progname = opts[:progname] || File.basename($0)
       @pid_file = opts[:pid_file] || "/var/run/#{@progname}.pid"
       @periodic = opts[:periodic]
+      @logger   = opts[:logger]
     end
 
     def stop_requested?
