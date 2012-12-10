@@ -1,11 +1,9 @@
 module Init
   module Periodic
 
-    include Stoppable
-
     def self.included base
       base.send :alias_method_chain, :call, :periodic
-      base.attr_reader :seconds
+      base.attr_accessor :seconds
     end
 
     def call_with_periodic *args
