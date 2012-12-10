@@ -3,7 +3,7 @@ module Init
 
     def self.included base
       base.send :alias_method_chain, :call, :periodic
-      base.attr_accessor :seconds
+      base.send :attr_accessor, :seconds
     end
 
     def call_with_periodic *args
