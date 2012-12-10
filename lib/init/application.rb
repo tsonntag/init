@@ -11,6 +11,7 @@ module Init
       @stop_requested
     end
 
+    # run as daemon
     def start! *args
       if daemon_running?
         STDERR.puts "Daemon is already running with pid #{read_pid}"
@@ -21,6 +22,7 @@ module Init
       end
     end
 
+    # stop daemon
     def stop!
       if pid = read_pid
         Process.kill :INT, pid
@@ -34,7 +36,7 @@ module Init
     ensure
       remove_pid
     end
-
+ 
     def status
       if daemon_running?
         puts "running with pid #{read_pid}"
@@ -43,6 +45,7 @@ module Init
       end
     end
 
+    # trap signals and call #call 
     def run! *args
       @stop_requested = false
 
@@ -62,13 +65,15 @@ module Init
       STDERR.puts %Q( Usage: #{File.basename($0)} start | stop | run | status)
     end
 
-    def command args = ARGV
+    def command! args = ARGV
       cmd = args.shift
       case cmd 
-      when /start|stop|run/
-        send :"#{cmd}!"
+      when /start|run/
+        send :"#{cmd}!", *args
       when 'status'
         status
+      when 'stop'
+        stop!
       else
         usage 
       end
