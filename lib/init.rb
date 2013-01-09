@@ -10,6 +10,7 @@ module Init
   autoload :Periodic,        'init/periodic'
   autoload :ProcessItem,     'init/process_item'
   autoload :ProcessServer,   'init/process_server'
+  autoload :Stoppable,       'init/stoppable'
   autoload :ThreadItem,      'init/thread_item'
   autoload :ThreadServer,    'init/thread_server'
 end
