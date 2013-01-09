@@ -4,10 +4,9 @@ require 'rubygems'
 require 'active_support/core_ext'
 
 module Init
+  CMDS = %w(list ls halt help start stop run alive status)
 
   class Init
-
-    CMDS = %w(list ls halt help start stop run alive status)
 
     attr_reader :logger, :items
 
