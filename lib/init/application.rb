@@ -1,14 +1,14 @@
 module Init
   class Application
 
-    attr_reader :progname, :pid_file, :periodic, :logger
+    attr_reader :progname, :pid_dir, :pid_file, :periodic
 
     def initialize opts = {}
-      @logger   = opts[:logger]
       @progname = opts[:progname] || File.basename($0)
-      @pid_file = opts[:pid_file] || "/var/run/#{@progname}.pid"
+      @pid_dir  = opts[:pid_dir]  || "ENV['HOME'] || '/var/run'
+      @pid_file = opts[:pid_file] || File.join(@pid_dir,"#{@progname}.pid")
       @periodic = opts[:periodic]
-      raise "pid_file #{@pid_file} is not writable" unless File.writable?(File.dirname(@pid_file))
+      raise "pid_dir #{@pid_dir} is not writable" unless File.writable?(@pid_dir)
     end
 
     def stop_requested?
