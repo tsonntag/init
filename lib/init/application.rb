@@ -8,6 +8,7 @@ module Init
       @progname = opts[:progname] || File.basename($0)
       @pid_file = opts[:pid_file] || "/var/run/#{@progname}.pid"
       @periodic = opts[:periodic]
+      raise "pid_file #{@pid_file} is not writable" unless File.writable?(File.dirname(@pid_file))
     end
 
     def stop_requested?
