@@ -84,7 +84,7 @@ module Init
     end
 
     def usage
-      STDERR.puts %Q( Usage: #{File.basename($0)} start | stop | run | status)
+      STDERR.puts %Q( Usage: #{progname} start | stop | run | status)
     end
 
     def command! args = ARGV
