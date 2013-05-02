@@ -5,7 +5,7 @@ module Init
 
     def initialize opts = {}
       @progname = opts[:progname] || File.basename($0)
-      @pid_dir  = opts[:pid_dir]  || "ENV['HOME'] || '/var/run'
+      @pid_dir  = opts[:pid_dir]  || ENV['HOME'] || '/var/run'
       @pid_file = opts[:pid_file] || File.join(@pid_dir,"#{@progname}.pid")
       @periodic = opts[:periodic]
       raise "pid_dir #{@pid_dir} is not writable" unless File.writable?(@pid_dir)
