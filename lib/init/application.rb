@@ -1,18 +1,14 @@
 module Init
   class Application
 
-    attr_reader :progname, :pid_dir, :pid_file, :periodic
+    attr_reader :progname, :pid_dir, :periodic, :multi
 
     def initialize opts = {}
       @progname = opts[:progname] || File.basename($0)
       @pid_dir  = opts[:pid_dir]  || ENV['HOME'] || '/var/run'
-      @pid_file = opts[:pid_file] || File.join(@pid_dir,"#{@progname}.pid")
       @periodic = opts[:periodic]
+      @multi    = opts[:multi]
       raise "pid_dir #{@pid_dir} is not writable" unless File.writable?(@pid_dir)
-    end
-
-    def stop_requested?
-      @stop_requested
     end
 
     # to be overwritten
@@ -23,82 +19,116 @@ module Init
     def stop
     end
 
-    # run as daemon
-    def start! *args
-      if daemon_running?
-        STDERR.puts "Daemon is already running with pid #{read_pid}"
+    def command! *args
+      if (command = args.last.to_s) =~ /\Astop|status\Z/  
+        instances = args.size == 2 ? [Instance.new(self,instance_name(args[0]))] : running_instances
+        puts "no instances running for #{progname}" if instances.empty?
+        instances.each{|instance| instance.send command.intern}
+      elsif multi && (command = args[1].to_s) =~ /\Arun|start\Z/
+        Instance.new(self,instance_name(args[0])).send command.intern
+      elsif !multi && (command = args[0].to_s) =~ /\Arun|start\Z/
+        Instance.new(self).send command.intern
       else
-        Process.daemon
-        save_pid
-        run! *args
+        usage
+      end
+    end
+
+    def running_instance_names
+      pid_files.map{|pid_file| File.basename(pid_file).match(/(#{progname}.*)\.pid\Z/).captures.first}
+    end
+
+    def running_instances
+      running_instance_names.map{|name|Instance.new(self,name)}
+    end 
+  
+    def usage
+      s = multi ? "#{progname} [<n>|<n>-<m>]" : progname
+      STDERR.puts %Q( Usage: #{s} start | stop | run | status)
+    end
+
+    private
+    def pid_files
+      Dir["#{pid_dir}/#{instance_name('*')}.pid"]
+    end
+   
+    def instance_name n
+      multi ? "#{progname}-#{n}" : progname
+    end
+  end
+
+  class Instance
+    attr_reader :progname, :pid_file, :app
+
+    def initialize app, progname = nil
+      @app = app
+      @progname = progname || app.progname
+      @pid_file = File.join(app.pid_dir,"#{@progname}.pid")
+    end
+
+    def stop_requested?
+      @stop_requested
+    end
+
+    # run as daemon
+    def start *args
+      if daemon_running?
+        STDERR.puts "Daemon #{progname} is already running with pid #{read_pid}"
+      else
+        fork do 
+          Process.daemon
+          save_pid 
+          run *args
+        end
       end
     end
 
     # stop daemon
-    def stop!
-      if pid = read_pid
+    def stop 
+      if pid = read_pid 
         Process.kill :INT, pid
       else
         STDERR.puts "No pid file #{pid_file}"
         exit 1
       end
     rescue Errno::ESRCH
-      STDERR.puts "No daemon running with pid #{read_pid}"
+      STDERR.puts "No daemon #{progname} running with pid #{read_pid}"
       exit 3
     ensure
-      remove_pid
+      remove_pid 
     end
  
     def status
-      if daemon_running?
-        puts "running with pid #{read_pid}"
+      if daemon_running? 
+        puts "#{progname} running with pid #{read_pid}"
       else
-        puts "not running"
+        puts "#{progname} not running"
       end
     end
 
     # trap signals and call #call 
-    def run! *args
+    def run *args
       @stop_requested = false
 
       %w(INT TERM).each do |s|
         trap(s) do
-          logger.info{ "#{self}: signal caught. setting stop..." } if logger
+          logger.info{ "#{self}: signal caught. setting stop..." } if respond_to?(:logger)
           @stop_requested = true
-          stop
-          remove_pid
+          app.stop if app.respond_to?(:stop)
+          remove_pid *args
         end
       end
 
       while !stop_requested?
-        call *args
-        break unless periodic
+        app.call *args
+        break unless app.periodic
 
-        logger.debug{"#{self}: sleeping #{periodic} seconds"} if logger
-        periodic.times do
+        logger.debug{"#{self}: sleeping #{app.periodic} seconds"} if respond_to?(:logger)
+        app.periodic.times do
           break if stop_requested?
           sleep 1
         end
       end
 
-    end
-
-    def usage
-      STDERR.puts %Q( Usage: #{progname} start | stop | run | status)
-    end
-
-    def command! args = ARGV
-      cmd = args.shift
-      case cmd 
-      when /start|run/
-        send :"#{cmd}!", *args
-      when 'status'
-        status
-      when 'stop'
-        stop!
-      else
-        usage 
-      end
     end
 
     def to_s
