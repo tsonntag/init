@@ -35,7 +35,7 @@ module Init
     end
 
     def configure
-     @configure.call if @configure
+     @configure.call(self) if @configure
     end
 
     private
