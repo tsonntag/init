@@ -4,7 +4,7 @@ require 'active_support/core_ext/string/inflections'
 module Init
   class Application
 
-    class_attribute _progname, :pid_dir, :periodic, :multi
+    class_attribute :progname, :pid_dir, :periodic, :multi
 
     def self.inherited base
       base.progname = base.name.to_s.underscore.split(/\//).last
