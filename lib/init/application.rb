@@ -6,7 +6,10 @@ module Init
 
     class_attribute :progname, :pid_dir, :periodic, :multi
 
-    self.progname = self.name.to_s.underscore
+    def self.inherited base
+      base.progname = base.name.to_s.underscore.split(/\//).last
+    end
+
     self.pid_dir  = ENV['HOME'] || '/var/run'
     self.multi    = false
     self.periodic = nil
@@ -31,7 +34,7 @@ module Init
         else
           return usage
         end
-        instances.each{|name| new(name).send command.intern}
+        instances.each{|name| new(name).send :"#{command}!"}
       end
 
       private
@@ -75,23 +78,23 @@ module Init
     def initialize name = progname
       @name = name
       raise "pid_dir #{pid_dir} is not writable" unless File.writable?(pid_dir)
-      @pid_file = File.join(self.class.pid_dir,"#{@name}.pid")
+      @pid_file = File.join pid_dir,"#{@name}.pid"
     end
 
     # run as daemon
-    def start *args
+    def start! *args
       if daemon_running?
         STDERR.puts "Daemon #{@name} is already running with pid #{read_pid}"
       else
         fork do 
           Process.daemon
           save_pid 
-          run *args
+          run! *args
         end
       end
     end
 
-    def stop 
+    def stop! 
       if pid = read_pid 
         Process.kill :INT, pid
       else
@@ -101,11 +104,9 @@ module Init
     rescue Errno::ESRCH
       STDERR.puts "No daemon #{@name} running with pid #{read_pid}"
       exit 3
-    ensure
-      remove_pid 
     end
  
-    def status
+    def status!
       if daemon_running? 
         puts "#{@name} running with pid #{read_pid}"
       else
@@ -114,7 +115,7 @@ module Init
     end
 
     # trap signals and call #call 
-    def run *args
+    def run! *args
       @stop_requested = false
 
       %w(INT TERM).each do |s|
@@ -122,7 +123,6 @@ module Init
           logger.info{ "#{self}: signal caught. setting stop..." } if respond_to?(:logger)
           @stop_requested = true
           stop if respond_to?(:stop)
-          remove_pid *args
         end
       end
 
@@ -139,6 +139,8 @@ module Init
         end
       end
 
+      remove_pid 
+      logger.info{ "#{self}: stopped." } if respond_to?(:logger)
     end
 
     def save_pid
