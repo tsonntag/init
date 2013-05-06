@@ -19,4 +19,6 @@ Gem::Specification.new do |gem|
   #gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.executables   = [] 
   gem.require_paths = %w(lib) 
+
+  gem.add_dependency 'activesupport'
 end

@@ -1,16 +1,15 @@
+require 'active_support/core_ext/class/attribute'
+require 'active_support/inflector/methods'
+
 module Init
   class Application
 
-    attr_reader :progname, :pid_dir, :periodic, :multi
+    class_attribute :progname, :pid_dir, :periodic, :multi
 
-    def initialize opts = {}, &configure
-      @progname = opts[:progname] || File.basename($0)
-      @pid_dir  = opts[:pid_dir]  || ENV['HOME'] || '/var/run'
-      @periodic = opts[:periodic]
-      @multi    = opts[:multi]
-      raise "pid_dir #{@pid_dir} is not writable" unless File.writable?(@pid_dir)
-      @configure = configure if configure
-    end
+    self.progname = self.class.to_s.underscore
+    self.pid_dir  = ENV['HOME'] || '/var/run'
+    self.multi    = false
+    self.periodic = nil
 
     # to be overwritten
     def call *args
@@ -20,71 +19,73 @@ module Init
     def stop
     end
 
-    def command! *args
-      if (command = args.last.to_s) =~ /\Astop|status\Z/  
-        instances = args.size == 2 ? parse_instances(args[0]) : running_instances
-        puts "no instances running for #{progname}" if instances.empty?
-        instances.each{|instance| instance.send command.intern}
-      elsif multi  && (command = args[1].to_s) =~ /\Arun|start\Z/
-        parse_instances(args[0]).each{|instance|instance.send command.intern}
-      elsif !multi && (command = args[0].to_s) =~ /\Arun|start\Z/
-        Instance.new(self).send command.intern
-      else
-        usage
+    class << self
+      def command! *args
+        if (command = args.last.to_s) =~ /\Astop|status\Z/  
+          instances = args.size == 2 ? parse_instances(args[0]) : running_instances
+          puts "no instances running for #{progname}" if instances.empty?
+        elsif  multi && (command = args[1].to_s) =~ /\Arun|start\Z/
+          instances = parse_instances args[0]
+        elsif !multi && (command = args[0].to_s) =~ /\Arun|start\Z/
+          instances = [progname]
+        else
+          return usage
+        end
+        instances.each{|name| new(name).send command.intern}
+      end
+
+      private
+      def running_instances
+        pid_files.map{|pid_file| File.basename(pid_file).match(/(#{progname}.*)\.pid\Z/).captures.first}
+      end
+
+      def usage
+        s = multi ? "#{progname} [<n>|<n>-<m>]" : progname
+        STDERR.puts %Q( Usage: #{s} start | stop | run | status)
+      end
+  
+      def pid_files
+        validate_pid_dir
+        Dir["#{pid_dir}/#{instance_name('*')}.pid"]
+      end
+     
+      def instance_name n
+        multi ? "#{progname}-#{n}" : progname
+      end
+  
+      def parse_instances arg
+        arg.split(/,/).map do |s|
+          range = s.split(/-/)
+          range.size == 2 ? (range.first..range.last).to_a : range
+        end.uniq.flatten
+      end
+
+      def validate_pid_dir
+        raise "pid_dir #{pid_dir} is not writable" unless File.writable?(pid_dir)
       end
     end
 
-    def configure
-     @configure.call(self) if @configure
-    end
-
-    private
-    def running_instance_names
-      pid_files.map{|pid_file| File.basename(pid_file).match(/(#{progname}.*)\.pid\Z/).captures.first}
-    end
-
-    def running_instances
-      running_instance_names.map{|name|Instance.new(self,name)}
-    end 
-  
-    def usage
-      s = multi ? "#{progname} [<n>|<n>-<m>]" : progname
-      STDERR.puts %Q( Usage: #{s} start | stop | run | status)
-    end
-
-    def pid_files
-      Dir["#{pid_dir}/#{instance_name('*')}.pid"]
-    end
-   
-    def instance_name n
-      multi ? "#{progname}-#{n}" : progname
-    end
-
-    def parse_instances arg
-      arg.split(/,/).map do |s|
-        range = s.split(/-/)
-        range.size == 2 ? (range.first..range.last).to_a : range
-      end.uniq.flatten.map{|n| Instance.new self, instance_name(n)}
-    end
-  end
-
-  class Instance
-    attr_reader :progname, :pid_file, :app
-
-    def initialize app, progname = nil
-      @app = app
-      @progname = progname || app.progname
-      @pid_file = File.join(app.pid_dir,"#{@progname}.pid")
-    end
 
     def stop_requested?
       @stop_requested
     end
 
+    def to_s
+      @name
+    end
+
+    private
+
+    def initialize name = progname
+      @name = name
+      self.class.validate_pid_dir
+      @pid_file = File.join(self.class.pid_dir,"#{@name}.pid")
+    end
+
     # run as daemon
     def start *args
       if daemon_running?
-        STDERR.puts "Daemon #{progname} is already running with pid #{read_pid}"
+        STDERR.puts "Daemon #{@name} is already running with pid #{read_pid}"
       else
         fork do 
           Process.daemon
@@ -94,7 +95,6 @@ module Init
       end
     end
 
-    # stop daemon
     def stop 
       if pid = read_pid 
         Process.kill :INT, pid
@@ -103,7 +103,7 @@ module Init
         exit 1
       end
     rescue Errno::ESRCH
-      STDERR.puts "No daemon #{progname} running with pid #{read_pid}"
+      STDERR.puts "No daemon #{@name} running with pid #{read_pid}"
       exit 3
     ensure
       remove_pid 
@@ -111,9 +111,9 @@ module Init
  
     def status
       if daemon_running? 
-        puts "#{progname} running with pid #{read_pid}"
+        puts "#{@name} running with pid #{read_pid}"
       else
-        puts "#{progname} not running"
+        puts "#{@name} not running"
       end
     end
 
@@ -145,12 +145,6 @@ module Init
 
     end
 
-    def to_s
-      progname
-    end
-
-    private
-    
     def save_pid
       IO.write pid_file, Process.pid.to_s
     end
