@@ -1,12 +1,12 @@
 require 'active_support/core_ext/class/attribute'
-require 'active_support/inflector/methods'
+require 'active_support/core_ext/string/inflections'
 
 module Init
   class Application
 
     class_attribute :progname, :pid_dir, :periodic, :multi
 
-    self.progname = self.class.to_s.underscore
+    self.progname = self.name.to_s.underscore
     self.pid_dir  = ENV['HOME'] || '/var/run'
     self.multi    = false
     self.periodic = nil
@@ -45,7 +45,7 @@ module Init
       end
   
       def pid_files
-        validate_pid_dir
+        raise "pid_dir #{pid_dir} is not writable" unless File.writable?(pid_dir)
         Dir["#{pid_dir}/#{instance_name('*')}.pid"]
       end
      
@@ -60,11 +60,7 @@ module Init
         end.uniq.flatten
       end
 
-      def validate_pid_dir
-        raise "pid_dir #{pid_dir} is not writable" unless File.writable?(pid_dir)
-      end
     end
-
 
     def stop_requested?
       @stop_requested
@@ -78,7 +74,7 @@ module Init
 
     def initialize name = progname
       @name = name
-      self.class.validate_pid_dir
+      raise "pid_dir #{pid_dir} is not writable" unless File.writable?(pid_dir)
       @pid_file = File.join(self.class.pid_dir,"#{@name}.pid")
     end
 
@@ -99,7 +95,7 @@ module Init
       if pid = read_pid 
         Process.kill :INT, pid
       else
-        STDERR.puts "No pid file #{pid_file}"
+        STDERR.puts "No pid file #{@pid_file}"
         exit 1
       end
     rescue Errno::ESRCH
@@ -146,15 +142,15 @@ module Init
     end
 
     def save_pid
-      IO.write pid_file, Process.pid.to_s
+      IO.write @pid_file, Process.pid.to_s
     end
 
     def remove_pid
-      File.delete(pid_file) if File.exists?(pid_file)
+      File.delete(@pid_file) if File.exists?(@pid_file)
     end
 
     def read_pid
-      File.exists?(pid_file) && File.read(pid_file).strip.to_i
+      File.exists?(@pid_file) && File.read(@pid_file).strip.to_i
     end
 
     def daemon_running?
