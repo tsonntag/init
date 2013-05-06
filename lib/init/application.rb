@@ -120,7 +120,7 @@ module Init
 
       %w(INT TERM).each do |s|
         trap(s) do
-          logger.info{ "#{self}: signal caught. setting stop..." } if respond_to?(:logger)
+          logger.info{ "signal caught. setting stop..." } if respond_to?(:logger)
           @stop_requested = true
           stop if respond_to?(:stop)
         end
@@ -132,7 +132,7 @@ module Init
         call *args
         break unless periodic
 
-        logger.debug{"#{self}: sleeping #{periodic} seconds"} if respond_to?(:logger)
+        logger.debug{"sleeping #{periodic} seconds"} if respond_to?(:logger)
         periodic.times do
           break if stop_requested?
           sleep 1
@@ -140,7 +140,7 @@ module Init
       end
 
       remove_pid 
-      logger.info{ "#{self}: stopped." } if respond_to?(:logger)
+      logger.info{ "stopped." } if respond_to?(:logger)
     end
 
     def save_pid
