@@ -19,6 +19,10 @@ module Init
     def stop
     end
 
+    # to be overwritten
+    def configure
+    end
+
     def command! *args
       if (command = args.last.to_s) =~ /\Astop|status\Z/  
         instances = args.size == 2 ? parse_instances(args[0]) : running_instances
@@ -33,6 +37,7 @@ module Init
       end
     end
 
+    private
     def running_instance_names
       pid_files.map{|pid_file| File.basename(pid_file).match(/(#{progname}.*)\.pid\Z/).captures.first}
     end
@@ -46,7 +51,6 @@ module Init
       STDERR.puts %Q( Usage: #{s} start | stop | run | status)
     end
 
-    private
     def pid_files
       Dir["#{pid_dir}/#{instance_name('*')}.pid"]
     end
@@ -124,6 +128,8 @@ module Init
           remove_pid *args
         end
       end
+
+      app.configure if app.respond_to? :configure
 
       while !stop_requested?
         app.call *args
