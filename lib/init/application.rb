@@ -4,7 +4,7 @@ require 'active_support/core_ext/string/inflections'
 module Init
   class Application
 
-    class_attribute :progname, :pid_dir, :periodic, :multi
+    class_attribute _progname, :pid_dir, :periodic, :multi
 
     def self.inherited base
       base.progname = base.name.to_s.underscore.split(/\//).last
@@ -70,21 +70,21 @@ module Init
     end
 
     def to_s
-      @name
+      progname
     end
 
     private
 
-    def initialize name = progname
-      @name = name
+    def initialize name = self.class.progname
+      @progname = name
       raise "pid_dir #{pid_dir} is not writable" unless File.writable?(pid_dir)
-      @pid_file = File.join pid_dir,"#{@name}.pid"
+      @pid_file = File.join pid_dir,"#{progname}.pid"
     end
 
     # run as daemon
     def start! *args
       if daemon_running?
-        STDERR.puts "Daemon #{@name} is already running with pid #{read_pid}"
+        STDERR.puts "Daemon #{progname} is already running with pid #{read_pid}"
       else
         fork do 
           Process.daemon
@@ -102,15 +102,15 @@ module Init
         exit 1
       end
     rescue Errno::ESRCH
-      STDERR.puts "No daemon #{@name} running with pid #{read_pid}"
+      STDERR.puts "No daemon #{progname} running with pid #{read_pid}"
       exit 3
     end
  
     def status!
       if daemon_running? 
-        puts "#{@name} running with pid #{read_pid}"
+        puts "#{progname} running with pid #{read_pid}"
       else
-        puts "#{@name} not running"
+        puts "#{progname} not running"
       end
     end
 
