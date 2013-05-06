@@ -3,12 +3,13 @@ module Init
 
     attr_reader :progname, :pid_dir, :periodic, :multi
 
-    def initialize opts = {}
+    def initialize opts = {}, &configure
       @progname = opts[:progname] || File.basename($0)
       @pid_dir  = opts[:pid_dir]  || ENV['HOME'] || '/var/run'
       @periodic = opts[:periodic]
       @multi    = opts[:multi]
       raise "pid_dir #{@pid_dir} is not writable" unless File.writable?(@pid_dir)
+      @configure = configure if configure
     end
 
     # to be overwritten
@@ -31,6 +32,10 @@ module Init
       else
         usage
       end
+    end
+
+    def configure
+     @configure.call if @configure
     end
 
     private
@@ -124,6 +129,8 @@ module Init
           remove_pid *args
         end
       end
+
+      app.configure
 
       while !stop_requested?
         app.call *args
