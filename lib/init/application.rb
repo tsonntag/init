@@ -21,11 +21,11 @@ module Init
 
     def command! *args
       if (command = args.last.to_s) =~ /\Astop|status\Z/  
-        instances = args.size == 2 ? [Instance.new(self,instance_name(args[0]))] : running_instances
+        instances = args.size == 2 ? parse_instances(args[0]) : running_instances
         puts "no instances running for #{progname}" if instances.empty?
         instances.each{|instance| instance.send command.intern}
-      elsif multi && (command = args[1].to_s) =~ /\Arun|start\Z/
-        Instance.new(self,instance_name(args[0])).send command.intern
+      elsif multi  && (command = args[1].to_s) =~ /\Arun|start\Z/
+        parse_instances(args[0]).each{|instance|instance.send command.intern}
       elsif !multi && (command = args[0].to_s) =~ /\Arun|start\Z/
         Instance.new(self).send command.intern
       else
@@ -53,6 +53,13 @@ module Init
    
     def instance_name n
       multi ? "#{progname}-#{n}" : progname
+    end
+
+    def parse_instances arg
+      arg.split(/,/).map do |s|
+        range = s.split(/-/)
+        range.size == 2 ? (range.first..range.last).to_a : range
+      end.uniq.flatten.map{|n| Instance.new self, instance_name(n)}
     end
   end
 
