@@ -60,7 +60,7 @@ module Init
         arg.split(/,/).map do |s|
           range = s.split(/-/)
           range.size == 2 ? (range.first..range.last).to_a : range
-        end.uniq.flatten
+        end.uniq.flatten.map{|n|instance_name n}
       end
 
     end
