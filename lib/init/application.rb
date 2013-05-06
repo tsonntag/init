@@ -125,19 +125,19 @@ module Init
         trap(s) do
           logger.info{ "#{self}: signal caught. setting stop..." } if respond_to?(:logger)
           @stop_requested = true
-          app.stop if app.respond_to?(:stop)
+          stop if respond_to?(:stop)
           remove_pid *args
         end
       end
 
-      app.configure
+      configure if respond_to?(:configure)
 
       while !stop_requested?
-        app.call *args
-        break unless app.periodic
+        call *args
+        break unless periodic
 
-        logger.debug{"#{self}: sleeping #{app.periodic} seconds"} if respond_to?(:logger)
-        app.periodic.times do
+        logger.debug{"#{self}: sleeping #{periodic} seconds"} if respond_to?(:logger)
+        periodic.times do
           break if stop_requested?
           sleep 1
         end
