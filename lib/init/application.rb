@@ -57,7 +57,7 @@ module Init
       end
   
       def parse_instances arg
-        arg.split(/,/).map do |s|
+        arg.to_s.split(/,/).map do |s|
           range = s.split(/-/)
           range.size == 2 ? (range.first..range.last).to_a : range
         end.uniq.flatten.map{|n|instance_name n}
