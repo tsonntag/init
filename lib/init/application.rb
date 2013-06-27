@@ -16,6 +16,7 @@ module Init
 
     # to be overwritten
     def call *args
+      proc.call
     end
 
     # to be overwritten
@@ -39,7 +40,7 @@ module Init
 
       private
       def running_instances
-        pid_files.map{|pid_file| File.basename(pid_file).match(/(#{progname}.*)\.pid\Z/).captures.first}
+        pid_files.map{|pid_file| File.basename(pid_file).gsub(/\.pid\Z/,'')}
       end
 
       def usage
@@ -75,8 +76,9 @@ module Init
 
     private
 
-    def initialize name = self.class.progname
+    def initialize name = self.class.progname, &proc
       @progname = name
+      @proc = proc
       raise "pid_dir #{pid_dir} is not writable" unless File.writable?(pid_dir)
       @pid_file = File.join pid_dir,"#{progname}.pid"
     end
