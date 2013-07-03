@@ -16,7 +16,7 @@ module Init
 
     # to be overwritten
     def call *args
-      proc.call
+      @proc.call
     end
 
     # to be overwritten
@@ -26,11 +26,11 @@ module Init
     class << self
       def command! *args
         if (command = args.last.to_s) =~ /\Astop|status\Z/  
-          instances = args.size == 2 ? parse_instances(args[0]) : running_instances
+          instances = args.size == 2 ? parse_instances(args.first) : running_instances
           puts "no instances running for #{progname}" if instances.empty?
         elsif  multi && (command = args[1].to_s) =~ /\Arun|start\Z/
-          instances = parse_instances args[0]
-        elsif !multi && (command = args[0].to_s) =~ /\Arun|start\Z/
+          instances = parse_instances args.first
+        elsif !multi && (command = args.first.to_s) =~ /\Arun|start\Z/
           instances = [progname]
         else
           return usage
@@ -63,7 +63,6 @@ module Init
           range.size == 2 ? (range.first..range.last).to_a : range
         end.uniq.flatten.map{|n|instance_name n}
       end
-
     end
 
     def stop_requested?
@@ -77,7 +76,7 @@ module Init
     private
 
     def initialize name = self.class.progname, &proc
-      @progname = name
+      self.progname = name
       @proc = proc
       raise "pid_dir #{pid_dir} is not writable" unless File.writable?(pid_dir)
       @pid_file = File.join pid_dir,"#{progname}.pid"
@@ -118,6 +117,8 @@ module Init
 
     # trap signals and call #call 
     def run! *args
+      Thread.current[:name] = progname
+
       @stop_requested = false
 
       %w(INT TERM).each do |s|
