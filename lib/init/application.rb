@@ -87,6 +87,7 @@ module Init
       if daemon_running?
         STDERR.puts "Daemon #{progname} is already running with pid #{read_pid}"
       else
+        logger.info{ "starting..." } if respond_to?(:logger)
         fork do 
           Process.daemon
           save_pid 

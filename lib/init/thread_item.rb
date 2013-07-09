@@ -22,13 +22,13 @@ module Init
       end
     end
 
-    def do_stop( *args ) # args without meaning
+    def do_stop
       @thread.wakeup
       proc.stop if proc.respond_to? :stop
     end
 
     private
-    def do_start(*args)
+    def do_start *args 
       @thread = Thread.new do
         logger.debug{"child: thread created. "}
         call *args
