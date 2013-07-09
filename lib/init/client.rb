@@ -1,29 +1,26 @@
-require 'rubygems'
 require 'readline'
 require 'drb'
-require 'active_support/core_ext'
+require 'active_support/core_ext/object/blank'
 
 module Init
   class Client
-    URI = "druby://localhost:8787"
-
     attr_reader :server, :uri
 
     # Usage example:
     #
-    # Init::Client.new("druby://0.0.0.0:8788").console('processc> ')
+    # Init::Client.new("localhost", "8788").console('processc> ')
     # starts console with prompt 'processc>'
-    def initialize( host, port )
+    def initialize host, port 
       DRb.start_service
       @uri = "druby://#{host}:#{port}"
       @server = DRbObject.new_with_uri(uri)
     end
 
-    def method_missing(*args)
+    def method_missing *args
       server.send *args
     end
 
-    def console( prompt = "#{server} >" )
+    def console prompt = "#{server} >"
       setup_readline
       while s = Readline.readline(prompt ,true)
         s.strip!

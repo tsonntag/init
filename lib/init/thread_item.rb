@@ -1,3 +1,5 @@
+require_relative 'abstract_item'
+
 module Init
   class ThreadItem < AbstractItem
     attr_reader :thread
@@ -36,7 +38,7 @@ module Init
         @thread = nil
         logger.info{"stopped"}
       end
-      @thread[:progname] = name
+      @thread[:name] = name
     end
   end
 end

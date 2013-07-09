@@ -1,7 +1,12 @@
+require 'drb'
+require_relative 'items'
+require_relative 'thread_item'
+require_relative 'single_application'
+
 module Init
   # Usage example:
   #
-  # Init::Server.create( some_uri ) do |server|
+  # Init::ThreadServer.create( some_uri ) do |server|
   #    server.add 'my_first_proc' do |args|
   #       puts 'first: called with #{args}'
   #    end
@@ -11,17 +16,41 @@ module Init
   #    end
   #
   # end
-  class Server < Application
-    include Init
+  class Server < SingleApplication
+    include Items
     include DRbUndumped
-    self.multi = false
-    self.periodic = nil
+
+    def command! *args
+      *names, command = args
+
+      case command
+      when 'status', 'stop'
+        if running?
+          target.send :"#{command}!"
+        else
+          puts "#{progname} server not running" 
+        end
+      when 'run', 'start'
+        target.send :"#{command}!"
+      else 
+        usage
+      end
+    end
 
     attr_reader :uri
 
     def initialize host, port
+      @host, @port = host, port
       @uri = "druby://#{host}:#{port}"
       super
+    end
+
+    def client
+      @client ||= Client.new @host, post
+    end
+
+    def target
+      running? ? client, self 
     end
 
     def call *args
@@ -35,21 +64,22 @@ module Init
       "#{super}(#{uri})"
     end
 
-    def item_class
-      ThreadItem
-    end
-
     def self.create *args
       server = new *args
       yield server
       server
     end
 
+    private
     def stop
       logger.info{"exiting... stopping all jobs"}
       wait_for_items_to_stop
       logger.info{"halted"}
       DRb.thread.exit
+    end
+
+    def item_class
+      ThreadItem
     end
 
     def wait_for_items_to_stop

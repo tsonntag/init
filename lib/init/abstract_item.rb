@@ -1,3 +1,5 @@
+require 'drb'
+
 module Init
   class AbstractItem
     include DRbUndumped
