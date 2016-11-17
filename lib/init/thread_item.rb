@@ -1,5 +1,3 @@
-require_relative 'abstract_item'
-
 module Init
   class ThreadItem < AbstractItem
     attr_reader :thread
@@ -24,13 +22,13 @@ module Init
       end
     end
 
-    def do_stop
+    def do_stop( *args ) # args without meaning
       @thread.wakeup
       proc.stop if proc.respond_to? :stop
     end
 
     private
-    def do_start *args 
+    def do_start(*args)
       @thread = Thread.new do
         logger.debug{"child: thread created. "}
         call *args
@@ -38,7 +36,7 @@ module Init
         @thread = nil
         logger.info{"stopped"}
       end
-      @thread[:name] = name
+      @thread[:progname] = name
     end
   end
 end

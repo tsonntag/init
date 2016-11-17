@@ -1,12 +1,10 @@
-require 'drb'
-
 module Init
   class AbstractItem
     include DRbUndumped
-    attr_reader :name, :proc
+    attr_reader :name, :proc, :logger
 
-    def initialize name, proc
-      @name, @proc = name, proc
+    def initialize(name, logger, proc)
+      @name, @logger, @proc = name, logger, proc
       @stop_requested = false
     end
 
@@ -18,7 +16,7 @@ module Init
       "#{item_status}#{stop_requested? ? ' stop requested' : ''}"
     end
 
-    def start *args
+    def start(*args)
       unless alive?
         @stop_requested = false
         logger.debug{"about to start #{name} args=#{args.inspect}"}
@@ -27,15 +25,15 @@ module Init
       end
     end
 
-    def stop *ignored 
+    def stop( *args ) # args without meaning
       if alive?
         logger.debug{"#{self}: setting stop_requested = true"}
         @stop_requested = true
-        do_stop 
+        do_stop *args
       end
     end
 
-    def call *args 
+    def call( *args )
       logger.debug{"about to call #{name}, args=#{args.inspect}"}
       if args.empty?
         proc.call

@@ -1,98 +1,124 @@
-require 'active_support/core_ext/class/attribute'
-require 'active_support/core_ext/string/inflections'
-require_relative 'stoppable'
-
 module Init
   class Application
-    class_attribute :progname, :pid_dir
 
-    def self.inherited base
-      base.progname = base.name.to_s.underscore.split(/\//).last
+    attr_reader :progname, :pid_dir, :pid_file, :periodic
+
+    def initialize opts = {}
+      @progname = opts[:progname] || File.basename($0)
+      @pid_dir  = opts[:pid_dir]  || ENV['HOME'] || '/var/run'
+      @pid_file = opts[:pid_file] || File.join(@pid_dir,"#{@progname}.pid")
+      @periodic = opts[:periodic]
+      raise "pid_dir #{@pid_dir} is not writable" unless File.writable?(@pid_dir)
     end
 
-    self.pid_dir  = ENV['HOME'] || '/var/run'
+    def stop_requested?
+      @stop_requested
+    end
 
     # to be overwritten
     def call *args
-      @proc.call
     end
 
-    include Stoppable
-
-    def to_s
-      progname
-    end
-
-    def initialize name = self.class.progname, &proc
-      self.progname = name
-      @proc = proc
-      raise "pid_dir #{pid_dir} is not writable" unless File.writable?(pid_dir)
-      @pid_file = File.join pid_dir,"#{progname}.pid"
+    # to be overwritten
+    def stop
     end
 
     # run as daemon
     def start! *args
       if daemon_running?
-        STDERR.puts "Daemon #{progname} is already running with pid #{read_pid}"
+        STDERR.puts "Daemon is already running with pid #{read_pid}"
       else
-        logger.info{ "starting..." } if respond_to?(:logger)
         fork do 
           Process.daemon
-          save_pid 
+          save_pid
           run! *args
         end
       end
     end
 
-    def stop! 
-      if pid = read_pid 
+    # stop daemon
+    def stop!
+      if pid = read_pid
         Process.kill :INT, pid
       else
-        STDERR.puts "No pid file #{@pid_file}"
+        STDERR.puts "No pid file #{pid_file}"
         exit 1
       end
     rescue Errno::ESRCH
-      STDERR.puts "No daemon #{progname} running with pid #{read_pid}"
+      STDERR.puts "No daemon running with pid #{read_pid}"
       exit 3
+    ensure
+      remove_pid
     end
  
-    def status!
-      if daemon_running? 
-        puts "#{progname} running with pid #{read_pid}"
+    def status
+      if daemon_running?
+        puts "running with pid #{read_pid}"
       else
-        puts "#{progname} not running"
+        puts "not running"
       end
     end
 
     # trap signals and call #call 
     def run! *args
-      configure if respond_to?(:configure)
-
-      Thread.current[:name] = progname
+      @stop_requested = false
 
       %w(INT TERM).each do |s|
         trap(s) do
-          logger.info{ "signal caught. setting stop..." } if respond_to?(:logger)
-          stop!
+          logger.info{ "#{self}: signal caught. setting stop..." } if logger
+          @stop_requested = true
+          stop
+          remove_pid
         end
       end
 
-      call *args
+      while !stop_requested?
+        call *args
+        break unless periodic
 
-      remove_pid 
-      logger.info{ "stopped." } if respond_to?(:logger)
+        logger.debug{"#{self}: sleeping #{periodic} seconds"} if logger
+        periodic.times do
+          break if stop_requested?
+          sleep 1
+        end
+      end
+
     end
 
+    def usage
+      STDERR.puts %Q( Usage: #{progname} start | stop | run | status)
+    end
+
+    def command! args = ARGV
+      cmd = args.shift
+      case cmd 
+      when /start|run/
+        send :"#{cmd}!", *args
+      when 'status'
+        status
+      when 'stop'
+        stop!
+      else
+        usage 
+      end
+    end
+
+    def to_s
+      progname
+    end
+
+    private
+    
     def save_pid
-      IO.write @pid_file, Process.pid.to_s
+      IO.write pid_file, Process.pid.to_s
     end
 
     def remove_pid
-      File.delete(@pid_file) if File.exists?(@pid_file)
+      File.delete(pid_file) if File.exists?(pid_file)
     end
 
     def read_pid
-      File.exists?(@pid_file) && File.read(@pid_file).strip.to_i
+      File.exists?(pid_file) && File.read(pid_file).strip.to_i
     end
 
     def daemon_running?
