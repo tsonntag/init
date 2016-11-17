@@ -4,8 +4,6 @@ require_relative 'stoppable'
 
 module Init
   class Application
-    include Stoppable
-
     class_attribute :progname, :pid_dir
 
     def self.inherited base
@@ -18,6 +16,8 @@ module Init
     def call *args
       @proc.call
     end
+
+    include Stoppable
 
     def to_s
       progname
