@@ -1,4 +1,5 @@
-require 'activesupport/core_ext/module'
+require 'active_support'
+require 'active_support/core_ext/module'
 
 module Init
   module Stoppable

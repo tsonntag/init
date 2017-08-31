@@ -36,9 +36,8 @@ module Init
     end
 
     private
-    
+
     def signal
-      logger.info{ "#{self}: signal caught. setting stop..." } if logger
       stop
     end
 
