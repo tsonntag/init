@@ -14,7 +14,7 @@ module Init
     # Init::Client.new("druby://0.0.0.0:8788").console('processc> ')
     # starts console with prompt 'processc>'
     def initialize( host, port )
-      DRb.start_service
+#     DRb.start_service
       @uri = "druby://#{host}:#{port}"
       @server = DRbObject.new_with_uri(uri)
     end
