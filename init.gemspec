@@ -9,8 +9,8 @@ Gem::Specification.new do |gem|
   gem.authors     = ["Thomas Sonntag"]
   gem.email       = ["git@sonntagsbox.de"]
   gem.homepage    = ""
-  gem.summary     = %q{Job control} 
-  gem.description = %q{Job control} 
+  gem.summary     = %q{Job control}
+  gem.description = %q{Job control}
 
   gem.rubyforge_project = "init"
 
@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   #gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.executables   = [] 
-  gem.require_paths = %w(lib) 
+  gem.require_paths = %w(lib)
 
-  gem.add_dependency 'activesupport', '~> 3.2'
+  gem.add_dependency 'activesupport'
 end

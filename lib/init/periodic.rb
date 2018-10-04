@@ -1,11 +1,12 @@
 module Init
   class PeriodicError < StandardError; end
   class Periodic
-    attr_reader :seconds, :delegate
+    attr_reader :seconds, :delegate, :logger
 
-    def initialize( delegate, seconds )
+    def initialize delegate, seconds
       @delegate, @seconds = delegate, seconds
-      raise PeriodicError, "delegate #{delegate} does not respond to call" unless delegate.respond_to? :call
+      raise PeriodicError, "#{delegate} does not respond to call" unless delegate.respond_to? :call
+      @logger = @delegate.logger
     end
 
     def stop
@@ -14,25 +15,25 @@ module Init
 
     include Stoppable
 
-    def call(*args)
+    def call *args
       reset_stop
-      logger.info{"#{self}: started with periodic=#{seconds}, args=#{args.inspect}"} if logger
+      logger.info{"Running #{deledate} every #{seconds} seconds"} if logger
       trap("INT"){signal}
       trap("KILL"){signal}
       trap("TERM"){signal}
       while !stop_requested?
-         delegate.call *args
-         logger.debug{"#{self}: about to sleep #{seconds} seconds"} if logger
-         seconds.times do
-           sleep 1
-           break if stop_requested?
-         end
+        delegate.call *args
+        logger.debug{"#{self}: about to sleep #{seconds} seconds"} if logger
+        seconds.times do
+          sleep 1
+          break if stop_requested?
+        end
       end
       logger.info{"#{self}: stopped"} if logger
     end
-  
+
     def to_s
-      "#{self.class}(#{delegate},#{seconds}secs)"
+      delegate.to_s
     end
 
     private
@@ -40,12 +41,5 @@ module Init
     def signal
       stop
     end
-
-    def logger
-      @logger ||= delegate.logger
-    end
-
   end
 end
-
-
