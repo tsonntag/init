@@ -21,16 +21,16 @@ module Init
       trap("KILL"){signal}
       trap("TERM"){signal}
       while !stop_requested?
-        delegate.call *args
-        logger.debug{"#{self}: about to sleep #{seconds} seconds"} if logger
-        seconds.times do
-          sleep 1
-          break if stop_requested?
-        end
+         delegate.call *args
+         logger.debug{"#{self}: about to sleep #{seconds} seconds"} if logger
+         seconds.times do
+           sleep 1
+           break if stop_requested?
+         end
       end
       logger.info{"#{self}: stopped"} if logger
     end
-
+  
     def to_s
       "#{self.class}(#{delegate},#{seconds}secs)"
     end
@@ -47,3 +47,5 @@ module Init
 
   end
 end
+
+
