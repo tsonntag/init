@@ -17,7 +17,7 @@ module Init
 
     def call *args
       reset_stop
-      logger.info{"Running #{deledate} every #{seconds} seconds"} if logger
+      logger.info{"Running #{delegate} every #{seconds} seconds"} if logger
       trap("INT"){signal}
       trap("KILL"){signal}
       trap("TERM"){signal}
