@@ -20,5 +20,5 @@ Gem::Specification.new do |gem|
   gem.executables   = [] 
   gem.require_paths = %w(lib)
 
-  gem.add_dependency 'activesupport'
+# gem.add_dependency 'activesupport'
 end

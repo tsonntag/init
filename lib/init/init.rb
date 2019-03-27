@@ -1,7 +1,6 @@
 require 'logger'
 require 'drb'
 require 'rubygems'
-require 'active_support/core_ext'
 
 module Init
   class Init
