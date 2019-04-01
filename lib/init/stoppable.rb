@@ -3,8 +3,8 @@ module Init
   module Stoppable
 
     def self.included(base)
-      base.send :alias_method :stop_without_stoppable, :stop
-      base.send :alias_method :stop, :stop_with_stoppable
+      base.send :alias_method, :stop_without_stoppable, :stop
+      base.send :alias_method, :stop, :stop_with_stoppable
     end
 
     def stop_with_stoppable
