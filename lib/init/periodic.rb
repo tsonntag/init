@@ -19,7 +19,7 @@ module Init
       reset_stop
       logger.info{"Running #{delegate} every #{seconds} seconds"} if logger
       trap("INT"){signal}
-      trap("KILL"){signal}
+      #trap("KILL"){signal} not supported by ruby 2.7.*
       trap("TERM"){signal}
       while !stop_requested?
         delegate.call *args
